@@ -8,6 +8,7 @@ import {
   validateSync,
 } from 'class-validator';
 import { BadRequestException } from '@nestjs/common';
+import { User } from '@libs/entities';
 
 export class RecordAggregate implements IRecord {
   @IsUUID()
@@ -17,7 +18,10 @@ export class RecordAggregate implements IRecord {
   @IsUUID()
   @IsOptional()
   user_id: string;
-  // user: User;
+
+  @IsOptional()
+  user?: User;
+
   @IsString()
   @IsNotEmpty()
   title: string;

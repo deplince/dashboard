@@ -46,6 +46,9 @@ export class RecordAdapter implements RecordRepository {
     const [entities, total] = await this.repository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
+      relations: {
+        user: true,
+      },
     });
 
     return {
@@ -59,10 +62,15 @@ export class RecordAdapter implements RecordRepository {
   }
 
   async getOne(id: string): Promise<RecordAggregate> {
-    const entity = await this.repository.findOne({ where: { id } });
+    const entity = await this.repository.findOne({
+      where: { id },
+      relations: {
+        user: true,
+      },
+    });
 
     if (!entity) {
-      throw new NotFoundException(`User with id ${id} not found`);
+      throw new NotFoundException(`Record with id ${id} not found`);
     }
 
     return RecordMapper.toDomain(entity);

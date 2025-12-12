@@ -3,6 +3,7 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { ICurrentUser, IJwtPayload } from '../domain';
 import { Injectable } from '@nestjs/common';
+import { UserRole } from '@libs/entities';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const _payload = payload as IJwtPayload;
     return {
       user_id: _payload.sub,
-      role: _payload.role,
+      role: _payload.role as UserRole,
     };
   }
 }

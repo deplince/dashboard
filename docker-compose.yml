@@ -14,6 +14,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:alpine
+    container_name: dashboard_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - dashboard_network
+
   backend:
     build: ./dashboard-backend
     container_name: dashboard-backend
@@ -29,7 +39,7 @@ services:
       PORT: 8080
     depends_on:
       - postgres
-      - migration
+      - redis
     volumes:
       - ./dashboard-backend:/app
       - /app/node_modules
@@ -45,6 +55,9 @@ services:
       - ./dashboard-frontend:/app
       - /app/node_modules
     stdin_open: true
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
+  redis_data:

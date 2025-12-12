@@ -6,12 +6,15 @@ import {
   Put,
   Delete,
   Query,
+  Post,
 } from '@nestjs/common';
 import { UserAggregate } from './domain';
 import { UserService } from './user.service';
-import { UpdateUserRequest } from './dto';
+import { UpdateUserRequest, ChangePasswordRequest } from './dto';
 import { DeleteUserResponse } from './dto/delete-user.response';
 import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
+import { HttpCurrentUser } from 'src/auth/decorator';
+import type { ICurrentUser } from 'src/auth/domain';
 
 @Controller('users')
 export class UserController {
@@ -44,5 +47,14 @@ export class UserController {
       return { message: 'User removed successfully' };
     }
     return { message: 'User removing failed' };
+  }
+
+  @Post('/change-password')
+  async changePassword(
+    @HttpCurrentUser() currentUser: ICurrentUser,
+    @Body() dto: ChangePasswordRequest,
+  ): Promise<{ success: boolean }> {
+    const result = await this.service.changePassword(currentUser, dto);
+    return { success: result };
   }
 }

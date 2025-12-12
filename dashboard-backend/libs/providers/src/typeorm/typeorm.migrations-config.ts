@@ -7,15 +7,15 @@ config({ path: join(process.cwd(), '.env') });
 const configService = new ConfigService();
 
 const options = (): DataSourceOptions => {
-  const url = configService.get('POSTGRES_URL');
-  if (!url) {
-    throw new Error('Database URL is empty');
-  }
   return {
-    url,
     type: 'postgres',
+    host: configService.get<string>('DATABASE_HOST'),
+    port: Number(configService.get<number>('DATABASE_PORT')),
+    username: configService.get<string>('DATABASE_USER'),
+    password: configService.get<string>('DATABASE_PASSWORD'),
+    database: configService.get<string>('DATABASE_NAME'),
     schema: 'public',
-    logging: configService.get('IS_PROD') === 'false',
+    logging: configService.get<string>('IS_PROD') === 'false',
     entities: [
       join(process.cwd(), 'dist', 'libs', 'entities', '**', '*.entity.{ts,js}'),
     ],

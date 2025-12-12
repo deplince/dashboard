@@ -46,6 +46,9 @@ export class UserAdapter implements UserRepository {
     const [entities, total] = await this.repository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
+      relations: {
+        records: true,
+      },
     });
 
     return {
@@ -59,7 +62,12 @@ export class UserAdapter implements UserRepository {
   }
 
   async getOne(id: string): Promise<UserAggregate> {
-    const entity = await this.repository.findOne({ where: { id } });
+    const entity = await this.repository.findOne({
+      where: { id },
+      relations: {
+        records: true,
+      },
+    });
 
     if (!entity) {
       throw new NotFoundException(`User with id ${id} not found`);

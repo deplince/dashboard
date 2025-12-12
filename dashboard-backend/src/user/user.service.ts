@@ -1,11 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  ForbiddenException,
+} from '@nestjs/common';
 import { UserRepository } from './provider';
 import { UserAggregate } from './domain';
 import { CreateUserRequest, UpdateUserRequest } from './dto';
 import bcrypt from 'bcrypt';
-import { ChangePasswordRequest } from './dto/change-password.request';
+import type { ChangePasswordRequest } from './dto/change-password.request';
 import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
-
+import { ICurrentUser } from 'src/auth/domain';
+import { UserRole } from '@libs/entities';
 const saltRounds = 10; // todo: may add it to env
 
 @Injectable()
@@ -40,14 +45,31 @@ export class UserService {
     return this.repository.getAll(paginations);
   }
 
-  async changePassword(dto: ChangePasswordRequest): Promise<boolean> {
+  async changePassword(
+    currentUser: ICurrentUser,
+    dto: ChangePasswordRequest,
+  ): Promise<boolean> {
     const { userId, oldPassword, newPassword } = dto;
-    // todo: if user want to change self password - doesn`t check role
     const user = await this.repository.getOne(userId);
-    const { password_hash } = user;
-    const isEqual = await bcrypt.compare(password_hash, oldPassword);
-    if (!isEqual) {
-      throw new BadRequestException('Invalid credentials');
+
+    if (currentUser.user_id !== userId) {
+      if (currentUser.role !== UserRole.ADMIN) {
+        throw new ForbiddenException(
+          'You do not have permission to change this password',
+        );
+      }
+
+      if (user.role !== UserRole.USER) {
+        throw new ForbiddenException(
+          'Admins can only change passwords of regular users',
+        );
+      }
+    } else {
+      const { password_hash } = user;
+      const isEqual = await bcrypt.compare(oldPassword, password_hash);
+      if (!isEqual) {
+        throw new BadRequestException('Invalid credentials');
+      }
     }
 
     const new_password_hash = await bcrypt.hash(newPassword, saltRounds);

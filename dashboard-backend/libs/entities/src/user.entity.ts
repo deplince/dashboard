@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Record } from './record.entity';
+import { UserRole } from './user-role.enum';
 
 @Entity('users')
 export class User {
@@ -25,8 +26,12 @@ export class User {
   @Column({ type: 'varchar', name: 'last_name' })
   last_name: string;
 
-  @Column({ name: 'role' }) // todo: may use enum or Role entity
-  role: string;
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 
   @OneToMany(() => Record, (record: Record) => record.user)
   records: Record[];

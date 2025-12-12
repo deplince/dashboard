@@ -5,11 +5,13 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  IsEnum,
   validateSync,
 } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { IUser } from './user.interface';
 import { BadRequestException } from '@nestjs/common';
+import { UserRole, Record } from '@libs/entities';
 
 export class UserAggregate implements IUser {
   @IsOptional()
@@ -33,11 +35,12 @@ export class UserAggregate implements IUser {
   @IsNotEmpty()
   last_name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  role: string;
+  @IsEnum(UserRole)
+  @IsOptional()
+  role: UserRole;
 
-  //records: Record[]; // todo: return to interface
+  @IsOptional()
+  records?: Record[]; // todo: return to interface
 
   @IsDate()
   @IsOptional()
@@ -54,6 +57,7 @@ export class UserAggregate implements IUser {
 
     if (!_user.created_at) _user.created_at = new Date();
     if (!_user.updated_at) _user.updated_at = new Date();
+    if (!_user.role) _user.role = UserRole.USER; // ofc it can do database
 
     const errors = validateSync(_user, { whitelist: true });
 
