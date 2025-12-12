@@ -10,4 +10,12 @@ export interface IUser {
   updated_at: Date;
 }
 
-export type UserProps = Omit<IUser, 'id' | 'created_at' | 'updated_at'>;
+export type UserProps = Omit<
+  IUser,
+  'id' | 'created_at' | 'updated_at' | 'role'
+>;
+
+export enum UserRoles {
+  ADMIN = 'admin',
+  USER = 'user',
+}
