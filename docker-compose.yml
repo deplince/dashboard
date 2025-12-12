@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: dashboard-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: default
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_DB: dashboard
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./dashboard-backend
+    container_name: dashboard-backend
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: default
+      DATABASE_PASSWORD: changeme
+      DATABASE_NAME: dashboard
+      JWT_SECRET: secret
+      PORT: 8080
+    depends_on:
+      - postgres
+      - migration
+    volumes:
+      - ./dashboard-backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./dashboard-frontend
+    container_name: dashboard-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    volumes:
+      - ./dashboard-frontend:/app
+      - /app/node_modules
+    stdin_open: true
+
+volumes:
+  postgres_data:

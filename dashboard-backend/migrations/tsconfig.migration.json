@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "js",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node"
+  },
+  "include": ["*migration.ts"]
+}
