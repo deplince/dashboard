@@ -9,4 +9,5 @@ export abstract class UserRepository {
     pagination: PaginationQuery,
   ): Promise<PaginationResponse<UserAggregate>>;
   abstract getOne(id: string): Promise<UserAggregate>;
+  abstract getOneByEmail(email: string): Promise<UserAggregate | null>;
 }

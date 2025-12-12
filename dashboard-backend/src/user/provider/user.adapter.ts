@@ -67,4 +67,10 @@ export class UserAdapter implements UserRepository {
 
     return UserMapper.toDomain(entity);
   }
+
+  async getOneByEmail(email: string): Promise<UserAggregate | null> {
+    const entity = await this.repository.findOne({ where: { email } });
+    if (!entity) return null;
+    return UserMapper.toDomain(entity);
+  }
 }

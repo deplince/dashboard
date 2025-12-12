@@ -1,17 +1,31 @@
 import { Module } from '@nestjs/common';
-import { RecordService } from './record.service';
-import { RecordController } from './record.controller';
-import { RecordRepository } from './provider/record.repository';
-import { RecordAdapter } from './provider/record.adapter';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { UserModule } from 'src/user/user.module';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { CacheStorageModule } from '@libs/providers/src/cache-storage/cache-storage.module';
 
 @Module({
-  providers: [
-    {
-      provide: RecordRepository,
-      useClass: RecordAdapter,
-    },
-    RecordService,
+  imports: [
+    UserModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: config.get<string>('JWT_TTL') || '1d',
+        },
+      }),
+    }),
+    CacheStorageModule,
   ],
-  controllers: [RecordController],
+  providers: [AuthService, JwtStrategy],
+  controllers: [AuthController],
+  exports: [AuthService],
 })
-export class RecordModule {}
+export class AuthModule {}

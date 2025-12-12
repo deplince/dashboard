@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { ProvidersModule } from '@libs/providers/providers.module';
@@ -8,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { RecordController } from './record/record.controller';
 import { RecordModule } from './record/record.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtGuard } from './auth/guard';
 
 @Module({
   imports: [
@@ -28,6 +30,11 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [RecordController],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
+  ],
 })
 export class AppModule {}

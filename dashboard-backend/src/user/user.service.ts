@@ -47,7 +47,7 @@ export class UserService {
     const { password_hash } = user;
     const isEqual = await bcrypt.compare(password_hash, oldPassword);
     if (!isEqual) {
-      throw new BadRequestException('Inserted password is not valid');
+      throw new BadRequestException('Invalid credentials');
     }
 
     const new_password_hash = await bcrypt.hash(newPassword, saltRounds);
@@ -56,5 +56,9 @@ export class UserService {
     });
 
     return true;
+  }
+
+  async getUserByEmail(email: string): Promise<UserAggregate | null> {
+    return this.repository.getOneByEmail(email);
   }
 }
