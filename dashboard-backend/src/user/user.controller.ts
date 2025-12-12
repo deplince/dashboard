@@ -1,16 +1,27 @@
-import { Body, Controller, Get, Param, Put, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Put,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { UserAggregate } from './domain';
 import { UserService } from './user.service';
 import { UpdateUserRequest } from './dto';
 import { DeleteUserResponse } from './dto/delete-user.response';
+import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Get('/')
-  async getAllUsers(): Promise<UserAggregate[]> {
-    return this.service.getAllUsers();
+  async getAllUsers(
+    @Query() pagination: PaginationQuery,
+  ): Promise<PaginationResponse<UserAggregate>> {
+    return this.service.getAllUsers(pagination);
   }
 
   @Get('/:id')

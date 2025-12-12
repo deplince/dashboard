@@ -3,6 +3,7 @@ import { CreateRecordRequest } from './dto';
 import { RecordAggregate } from './domain';
 import { RecordService } from './record.service';
 import { DeleteRecordResponse } from './dto/delete-record.response';
+import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
 
 @Controller('records')
 export class RecordController {
@@ -25,8 +26,10 @@ export class RecordController {
   }
 
   @Get('/')
-  async getAllRecords(): Promise<RecordAggregate[]> {
-    return this.service.getAllRecords();
+  async getAllRecords(
+    pagination: PaginationQuery,
+  ): Promise<PaginationResponse<RecordAggregate>> {
+    return this.service.getAllRecords(pagination);
   }
 
   @Get('/:id')

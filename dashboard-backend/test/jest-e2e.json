@@ -11,6 +11,7 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
+    "^@libs/common(|/.*)$": "<rootDir>/../libs/common/src/$1",
     "^libs/auth(|/.*)$": "<rootDir>/../libs/auth/src/$1",
     "^libs/entities(|/.*)$": "<rootDir>/../libs/entities/src/$1",
     "^libs/errors(|/.*)$": "<rootDir>/../libs/errors/src/$1",

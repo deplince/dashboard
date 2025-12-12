@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RecordRepository } from './provider/record.repository';
 import { CreateRecordRequest, UpdateRecordRequest } from './dto';
 import { RecordAggregate } from './domain';
+import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
 
 @Injectable()
 export class RecordService {
@@ -18,8 +19,10 @@ export class RecordService {
     return this.repository.update(id, dto);
   }
 
-  async getAllRecords(): Promise<RecordAggregate[]> {
-    return this.repository.getAll();
+  async getAllRecords(
+    pagination: PaginationQuery,
+  ): Promise<PaginationResponse<RecordAggregate>> {
+    return this.repository.getAll(pagination);
   }
 
   async getOneRecord(id: string): Promise<RecordAggregate> {

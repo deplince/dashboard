@@ -4,6 +4,7 @@ import { UserAggregate } from './domain';
 import { CreateUserRequest, UpdateUserRequest } from './dto';
 import bcrypt from 'bcrypt';
 import { ChangePasswordRequest } from './dto/change-password.request';
+import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
 
 const saltRounds = 10; // todo: may add it to env
 
@@ -33,8 +34,10 @@ export class UserService {
     return this.repository.getOne(id);
   }
 
-  async getAllUsers(): Promise<UserAggregate[]> {
-    return this.repository.getAll();
+  async getAllUsers(
+    paginations: PaginationQuery,
+  ): Promise<PaginationResponse<UserAggregate>> {
+    return this.repository.getAll(paginations);
   }
 
   async changePassword(dto: ChangePasswordRequest): Promise<boolean> {

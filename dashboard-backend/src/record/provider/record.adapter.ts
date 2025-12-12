@@ -4,6 +4,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Record } from '@libs/entities';
 import { Repository } from 'typeorm';
+import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
 
 @Injectable()
 export class RecordAdapter implements RecordRepository {
@@ -37,9 +38,24 @@ export class RecordAdapter implements RecordRepository {
     return (result.affected ?? 0) > 0; // todo: if affected says undefined or null - driver is silent
   }
 
-  async getAll(): Promise<RecordAggregate[]> {
-    const entities = await this.repository.find();
-    return RecordMapper.toDomainBatch(entities);
+  async getAll(
+    pagination: PaginationQuery,
+  ): Promise<PaginationResponse<RecordAggregate>> {
+    const { page, limit } = pagination;
+
+    const [entities, total] = await this.repository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data: RecordMapper.toDomainBatch(entities),
+      meta: {
+        total,
+        page,
+        last_page: Math.ceil(total / limit),
+      },
+    };
   }
 
   async getOne(id: string): Promise<RecordAggregate> {

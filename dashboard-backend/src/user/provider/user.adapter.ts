@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@libs/entities';
 import { Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
 
 @Injectable()
 export class UserAdapter implements UserRepository {
@@ -37,9 +38,24 @@ export class UserAdapter implements UserRepository {
     return (result.affected ?? 0) > 0; // todo: if affected says undefined or null - driver is silent
   }
 
-  async getAll(): Promise<UserAggregate[]> {
-    const entities = await this.repository.find();
-    return UserMapper.toDomainBatch(entities);
+  async getAll(
+    pagination: PaginationQuery,
+  ): Promise<PaginationResponse<UserAggregate>> {
+    const { page, limit } = pagination;
+
+    const [entities, total] = await this.repository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data: UserMapper.toDomainBatch(entities),
+      meta: {
+        total,
+        page,
+        last_page: Math.ceil(total / limit),
+      },
+    };
   }
 
   async getOne(id: string): Promise<UserAggregate> {

@@ -7,6 +7,7 @@ import { ErrorsModule } from '@libs/errors/errors.module';
 import { UserModule } from './user/user.module';
 import { RecordController } from './record/record.controller';
 import { RecordModule } from './record/record.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RecordModule } from './record/record.module';
     ]),
     UserModule,
     RecordModule,
+    AuthModule,
   ],
   controllers: [RecordController],
   providers: [],
