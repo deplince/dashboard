@@ -4,6 +4,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ProvidersModule } from '@libs/providers/providers.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ErrorsModule } from '@libs/errors/errors.module';
+import { UserModule } from './user/user.module';
+import { RecordController } from './record/record.controller';
+import { RecordModule } from './record/record.module';
 
 @Module({
   imports: [
@@ -19,8 +22,10 @@ import { ErrorsModule } from '@libs/errors/errors.module';
         limit: 100,
       },
     ]),
+    UserModule,
+    RecordModule,
   ],
-  controllers: [],
+  controllers: [RecordController],
   providers: [],
 })
 export class AppModule {}

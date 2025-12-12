@@ -13,5 +13,13 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7"
+  },
+  "lint-staged": {
+    "dashboard-backend/**/*.ts": [
+      "npm run lint --prefix dashboard-backend --"
+    ],
+    "dashboard-frontend/**/*.{ts,tsx}": [
+      "npm run lint --prefix dashboard-frontend --"
+    ]
   }
 }
