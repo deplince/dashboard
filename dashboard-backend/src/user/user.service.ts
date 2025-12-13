@@ -5,12 +5,13 @@ import {
 } from '@nestjs/common';
 import { UserRepository } from './provider';
 import { UserAggregate } from './domain';
-import { CreateUserRequest, UpdateUserRequest } from './dto';
+import { ChangeRoleRequest, CreateUserRequest, UpdateUserRequest } from './dto';
 import bcrypt from 'bcrypt';
 import type { ChangePasswordRequest } from './dto/change-password.request';
 import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
 import { ICurrentUser } from 'src/auth/domain';
 import { UserRole } from '@libs/entities';
+import { UserDataResponse } from './dto/user-data.response';
 const saltRounds = 10; // todo: may add it to env
 
 @Injectable()
@@ -20,7 +21,11 @@ export class UserService {
   async createUser(dto: CreateUserRequest): Promise<UserAggregate> {
     const { password, ...data } = dto;
     const password_hash = await bcrypt.hash(password, saltRounds);
-    return await this.repository.create({ ...data, password_hash });
+    return await this.repository.create({
+      ...data,
+      password_hash,
+      role: UserRole.USER,
+    });
   }
 
   // method doesn`t allow password updating
@@ -82,5 +87,20 @@ export class UserService {
 
   async getUserByEmail(email: string): Promise<UserAggregate | null> {
     return this.repository.getOneByEmail(email);
+  }
+
+  async updateUserRole(
+    { user_id, role }: ICurrentUser,
+    { userId, role: new_role }: ChangeRoleRequest,
+  ): Promise<UserDataResponse> {
+    if (role === UserRole.USER) {
+      throw new ForbiddenException('User can not change role');
+    }
+
+    if (user_id === userId) {
+      throw new ForbiddenException('User can not change role itself');
+    }
+
+    return this.repository.update(userId, { role: new_role });
   }
 }

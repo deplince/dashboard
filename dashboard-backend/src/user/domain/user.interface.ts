@@ -14,5 +14,5 @@ export interface IUser {
 
 export type UserProps = Omit<
   IUser,
-  'id' | 'created_at' | 'updated_at' | 'role' | 'records'
+  'id' | 'created_at' | 'updated_at' | 'records'
 >;

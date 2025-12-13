@@ -9,7 +9,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UpdateUserRequest, ChangePasswordRequest } from './dto';
+import {
+  UpdateUserRequest,
+  ChangePasswordRequest,
+  ChangeRoleRequest,
+} from './dto';
 import { DeleteUserResponse } from './dto/delete-user.response';
 import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
 import { HttpCurrentUser } from 'src/auth/decorator';
@@ -56,5 +60,13 @@ export class UserController {
   ): Promise<{ success: boolean }> {
     const result = await this.service.changePassword(currentUser, dto);
     return { success: result };
+  }
+
+  @Post('/user/role')
+  async changeUserRole(
+    @HttpCurrentUser() currentUser: ICurrentUser,
+    @Body() dto: ChangeRoleRequest,
+  ): Promise<UserDataResponse> {
+    return this.changeUserRole(currentUser, dto);
   }
 }
