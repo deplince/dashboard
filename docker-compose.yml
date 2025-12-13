@@ -45,9 +45,6 @@ services:
     depends_on:
       - postgres
       - redis
-    volumes:
-      - ./dashboard-backend:/app
-      - /app/node_modules
     networks:
       - dashboard_network
 
@@ -58,9 +55,6 @@ services:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8080
-    volumes:
-      - ./dashboard-frontend:/app
-      - /app/node_modules
     stdin_open: true
     depends_on:
       - backend

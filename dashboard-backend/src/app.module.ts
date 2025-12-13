@@ -6,7 +6,6 @@ import { ProvidersModule } from '@libs/providers/providers.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ErrorsModule } from '@libs/errors/errors.module';
 import { UserModule } from './user/user.module';
-import { RecordController } from './record/record.controller';
 import { RecordModule } from './record/record.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtGuard } from './auth/guard';
@@ -29,7 +28,7 @@ import { JwtGuard } from './auth/guard';
     RecordModule,
     AuthModule,
   ],
-  controllers: [RecordController],
+  controllers: [],
   providers: [
     {
       provide: APP_GUARD,
