@@ -40,7 +40,7 @@ export class UserAggregate implements IUser {
   role: UserRole;
 
   @IsOptional()
-  records?: Record[]; // todo: return to interface
+  records?: Record[];
 
   @IsDate()
   @IsOptional()

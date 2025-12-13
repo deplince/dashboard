@@ -1,21 +1,21 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
 import { join } from 'path';
-import { ConfigService } from '@nestjs/config';
 
-config({ path: join(process.cwd(), '.env.migrations') });
-const configService = new ConfigService();
+if (process.env.IS_PROD !== 'true') {
+  config({ path: join(process.cwd(), '.env.migrations') });
+}
 
 const options = (): DataSourceOptions => {
   return {
     type: 'postgres',
-    host: 'localhost',
-    port: Number(configService.get<number>('DATABASE_PORT')),
-    username: configService.get<string>('DATABASE_USER'),
-    password: configService.get<string>('DATABASE_PASSWORD'),
-    database: configService.get<string>('DATABASE_NAME'),
+    host: process.env.DATABASE_HOST || 'localhost',
+    port: Number(process.env.DATABASE_PORT),
+    username: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
     schema: 'public',
-    logging: configService.get<string>('IS_PROD') === 'false',
+    logging: process.env.IS_PROD === 'false',
     entities: [
       join(process.cwd(), 'libs', 'entities', 'src', '**', '*.entity.ts'),
     ],

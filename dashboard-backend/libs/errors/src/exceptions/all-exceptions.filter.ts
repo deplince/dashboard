@@ -14,7 +14,6 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
   catch(exception: T, host: ArgumentsHost): any {
-    this.logger.error(exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
@@ -23,15 +22,29 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    // naive implementation of error checking - logging systme errors only
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+      this.logger.error(exception);
+    }
     response.status(status).json(this._response(status, request, exception));
   }
 
   private _response(status: number, request: Request, exception: unknown) {
-    // todo: very dirty type check, review
     let errorName = 'Error';
-    let errorMessage = 'Internal server error';
+    let errorMessage: string | string[] = 'Internal server error';
 
-    if (exception instanceof Error) {
+    if (exception instanceof HttpException) {
+      errorName = exception.name;
+      const res = exception.getResponse();
+
+      if (typeof res === 'object' && res !== null && 'message' in res) {
+        errorMessage = (res as { message: string | string[] }).message; // linter is too strict
+      } else {
+        errorMessage = exception.message;
+      }
+    } else if (exception instanceof Error) {
       errorName = exception.name;
       errorMessage = exception.message;
     } else if (typeof exception === 'object' && exception !== null) {

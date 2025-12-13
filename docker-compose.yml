@@ -41,6 +41,7 @@ services:
       JWT_SECRET: secret
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      IS_PROD: "true"
       PORT: 8080
     depends_on:
       - postgres

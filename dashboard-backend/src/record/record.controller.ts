@@ -1,6 +1,5 @@
 import { Controller, Post, Body, Delete, Param, Get } from '@nestjs/common';
-import { CreateRecordRequest } from './dto';
-import { RecordAggregate } from './domain';
+import { CreateRecordRequest, RecordDataResponse } from './dto';
 import { RecordService } from './record.service';
 import { DeleteRecordResponse } from './dto/delete-record.response';
 import { PaginationQuery, PaginationResponse } from 'libs/common/dto';
@@ -12,7 +11,7 @@ export class RecordController {
   @Post('/')
   async createRecord(
     @Body() dto: CreateRecordRequest,
-  ): Promise<RecordAggregate> {
+  ): Promise<RecordDataResponse> {
     return this.service.createRecord(dto);
   }
 
@@ -28,12 +27,12 @@ export class RecordController {
   @Get('/')
   async getAllRecords(
     pagination: PaginationQuery,
-  ): Promise<PaginationResponse<RecordAggregate>> {
+  ): Promise<PaginationResponse<RecordDataResponse>> {
     return this.service.getAllRecords(pagination);
   }
 
   @Get('/:id')
-  async getOneRecord(@Param('id') id: string): Promise<RecordAggregate> {
+  async getOneRecord(@Param('id') id: string): Promise<RecordDataResponse> {
     return this.getOneRecord(id);
   }
 }

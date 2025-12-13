@@ -16,10 +16,10 @@
   },
   "lint-staged": {
     "dashboard-backend/**/*.ts": [
-      "npm run lint --prefix dashboard-backend --"
+      "yarn --cwd dashboard-backend lint"
     ],
     "dashboard-frontend/**/*.{ts,tsx}": [
-      "npm run lint --prefix dashboard-frontend --"
+      "yarn --cwd dashboard-frontend lint"
     ]
   }
 }

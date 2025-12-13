@@ -8,7 +8,7 @@ export class SeedUsersMigration1765614937212 implements MigrationInterface {
     const userRepository = queryRunner.manager.getRepository(User);
 
     const saltRounds = 10;
-    const commonPassword = 'password123'; // todo: not strict password - dto will ruine it
+    const commonPassword = 'StrongPassword!0@';
     const passwordHash = await bcrypt.hash(commonPassword, saltRounds);
 
     const usersToSeed = [

@@ -1,12 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, LogLevel } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const loggerConfig: LogLevel[] =
+    process.env.IS_PROD === 'true'
+      ? ['error', 'warn', 'log']
+      : ['error', 'warn', 'log', 'verbose', 'debug'];
 
+  const app = await NestFactory.create(AppModule, {
+    logger: loggerConfig,
+  });
   app.setGlobalPrefix('api');
 
   app.enableCors({
@@ -20,7 +26,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Dashboard API')
-    .setDescription('The cats API description')
+    .setDescription('The dashboard API description')
     .setVersion('1.0')
     .addTag('dashboard')
     .build();
