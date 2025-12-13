@@ -13,6 +13,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dashboard_network
 
   redis:
     image: redis:alpine
@@ -35,7 +37,10 @@ services:
       DATABASE_USER: default
       DATABASE_PASSWORD: changeme
       DATABASE_NAME: dashboard
+      JWT_TTL: 7d
       JWT_SECRET: secret
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       PORT: 8080
     depends_on:
       - postgres
@@ -43,6 +48,8 @@ services:
     volumes:
       - ./dashboard-backend:/app
       - /app/node_modules
+    networks:
+      - dashboard_network
 
   frontend:
     build: ./dashboard-frontend
@@ -50,14 +57,20 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:8080
     volumes:
       - ./dashboard-frontend:/app
       - /app/node_modules
     stdin_open: true
     depends_on:
       - backend
+    networks:
+      - dashboard_network
 
 volumes:
   postgres_data:
   redis_data:
+
+networks:
+  dashboard_network:
+    driver: bridge

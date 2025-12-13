@@ -1,10 +1,12 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "js",
-    "esModuleInterop": true,
-    "strict": true,
+    "target": "ES2021",
+    "strictPropertyInitialization": false,
     "skipLibCheck": true,
-    "moduleResolution": "node"
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
-  "include": ["*migration.ts"]
+  "include": ["*migration.ts", "../../libs/entities/src/**/*.ts"]
 }
