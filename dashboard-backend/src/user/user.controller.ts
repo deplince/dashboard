@@ -62,11 +62,11 @@ export class UserController {
     return { success: result };
   }
 
-  @Post('/user/role')
+  @Post('/role')
   async changeUserRole(
     @HttpCurrentUser() currentUser: ICurrentUser,
     @Body() dto: ChangeRoleRequest,
   ): Promise<UserDataResponse> {
-    return this.changeUserRole(currentUser, dto);
+    return this.service.updateUserRole(currentUser, dto);
   }
 }
