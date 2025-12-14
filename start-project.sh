@@ -88,6 +88,13 @@ fi
 
 echo -e "${YELLOW}Building and Starting Backend and Frontend...${NC}"
 run_compose build $NO_CACHE frontend
+
+if [ $? -ne 0 ]; then
+  echo -e "${RED}Frontend build failed!${NC}"
+  echo -e "${YELLOW}Check the error above and fix your code.${NC}"
+  exit 1
+fi
+
 run_compose up -d backend frontend
 
 echo -e "${GREEN}Dashboard Project Started Successfully!${NC}"

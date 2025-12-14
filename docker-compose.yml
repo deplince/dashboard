@@ -43,6 +43,7 @@ services:
       REDIS_PORT: 6379
       IS_PROD: "true"
       PORT: 8080
+      FRONTEND_URL: "http://127.0.0.1:3000"
     depends_on:
       - postgres
       - redis
@@ -56,6 +57,7 @@ services:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8080
+      INTERNAL_API_URL: http://backend:8080
     stdin_open: true
     depends_on:
       - backend

@@ -1,0 +1,14 @@
+export interface PaginationQuery {
+  page?: number;
+  limit?: number;
+  [key: string]: any;
+}
+
+export interface PaginationResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    last_page: number;
+  };
+}
