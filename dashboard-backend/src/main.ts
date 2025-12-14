@@ -1,7 +1,11 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
-import { ValidationPipe, LogLevel } from '@nestjs/common';
+import {
+  ValidationPipe,
+  LogLevel,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 
@@ -36,6 +40,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
     .setTitle('Dashboard API')
