@@ -66,8 +66,14 @@ export class AuthService {
       await this.cacheManager.del(cacheKey);
 
       const user = await this.userService.getOneUser(sub);
+
       return this._createSession(user, res);
-    } catch {
+    } catch (error) {
+      res.clearCookie('refresh_token', {
+        httpOnly: true,
+        secure: this.configService.get('IS_PROD') === 'true',
+        sameSite: this.configService.get('IS_PROD') === 'true' ? 'none' : 'lax',
+      });
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
@@ -87,7 +93,12 @@ export class AuthService {
       }
     }
 
-    res.clearCookie('refresh_token');
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: this.configService.get('IS_PROD') === 'true',
+      sameSite: this.configService.get('IS_PROD') === 'true' ? 'none' : 'lax',
+    });
+
     return { message: 'Logged out successfully' };
   }
 
@@ -124,26 +135,29 @@ export class AuthService {
       expires_at: new Date(Date.now() + msToExpire).toISOString(),
     };
 
-    await this.cacheManager.set(
-      `refresh_token:${user.id}:${refreshTokenJti}`,
-      cachePayload,
-      msToExpire,
-    );
+    const cacheKey = `refresh_token:${user.id}:${refreshTokenJti}`;
+    await this.cacheManager.set(cacheKey, cachePayload, msToExpire);
+
+    const isProd = this.configService.get('IS_PROD') === 'true';
 
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
-      secure: this.configService.get('IS_PROD') === 'true',
-      sameSite: 'strict',
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
       maxAge: msToExpire,
+      path: '/',
     });
 
     return {
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
       accessToken,
     };
   }
 
-  // todo: may find better alternative
   private _parseDuration(duration: string): number {
     if (!isNaN(Number(duration))) {
       return Number(duration);

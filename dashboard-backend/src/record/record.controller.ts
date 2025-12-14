@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Delete, Param, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Delete,
+  Param,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { CreateRecordRequest, RecordDataResponse } from './dto';
 import { RecordService } from './record.service';
 import { DeleteRecordResponse } from './dto/delete-record.response';
@@ -26,7 +34,7 @@ export class RecordController {
 
   @Get('/')
   async getAllRecords(
-    pagination: PaginationQuery,
+    @Query() pagination: PaginationQuery,
   ): Promise<PaginationResponse<RecordDataResponse>> {
     return this.service.getAllRecords(pagination);
   }
