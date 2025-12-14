@@ -4,7 +4,10 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { UserDataResponse } from 'src/user/dto/user-data.response';
 
 export class RecordDataResponse {
   @IsUUID()
@@ -14,6 +17,11 @@ export class RecordDataResponse {
   @IsUUID()
   @IsOptional()
   user_id: string;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => UserDataResponse)
+  user?: UserDataResponse;
 
   @IsString()
   @IsNotEmpty()

@@ -36,7 +36,7 @@ export class RecordController {
   async getAllRecords(
     @Query() pagination: PaginationQuery,
   ): Promise<PaginationResponse<RecordDataResponse>> {
-    return this.service.getAllRecords(pagination);
+    return await this.service.getAllRecords(pagination);
   }
 
   @Get('/:id')

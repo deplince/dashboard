@@ -6,8 +6,10 @@ import {
   IsString,
   IsUUID,
   IsEnum,
+  ValidateNested,
 } from 'class-validator';
 import { UserRole } from '@libs/entities';
+import { Exclude, Type } from 'class-transformer';
 import { RecordDataResponse } from 'src/record/dto';
 
 export class UserDataResponse {
@@ -18,6 +20,9 @@ export class UserDataResponse {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @Exclude()
+  password_hash: string;
 
   @IsString()
   @IsNotEmpty()
@@ -32,6 +37,8 @@ export class UserDataResponse {
   role: UserRole;
 
   @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => RecordDataResponse)
   records?: RecordDataResponse[];
 
   @IsDate()

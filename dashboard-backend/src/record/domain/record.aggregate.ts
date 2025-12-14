@@ -7,8 +7,9 @@ import {
   IsUUID,
   validateSync,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { BadRequestException } from '@nestjs/common';
-import { User } from '@libs/entities';
+import { UserAggregate } from 'src/user/domain';
 
 export class RecordAggregate implements IRecord {
   @IsUUID()
@@ -20,7 +21,8 @@ export class RecordAggregate implements IRecord {
   user_id: string;
 
   @IsOptional()
-  user?: User;
+  @Type(() => UserAggregate)
+  user?: UserAggregate;
 
   @IsString()
   @IsNotEmpty()

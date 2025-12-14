@@ -1,9 +1,9 @@
-import { User } from '@libs/entities';
+import { UserAggregate } from 'src/user/domain';
 
 export interface IRecord {
   id: string;
   user_id: string;
-  user?: User;
+  user?: UserAggregate;
   title: string;
   content: string;
   created_at: Date;
