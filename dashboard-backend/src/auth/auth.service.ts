@@ -68,7 +68,7 @@ export class AuthService {
       const user = await this.userService.getOneUser(sub);
 
       return this._createSession(user, res);
-    } catch (error) {
+    } catch {
       res.clearCookie('refresh_token', {
         httpOnly: true,
         secure: this.configService.get('IS_PROD') === 'true',

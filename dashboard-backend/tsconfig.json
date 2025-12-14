@@ -21,6 +21,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+    "useUnknownInCatchVariables": false,
     "paths": {
       "@libs/common": ["libs/common/src"],
       "@libs/common/*": ["libs/common/src/*"],

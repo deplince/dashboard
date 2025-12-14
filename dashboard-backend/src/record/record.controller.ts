@@ -41,6 +41,6 @@ export class RecordController {
 
   @Get('/:id')
   async getOneRecord(@Param('id') id: string): Promise<RecordDataResponse> {
-    return this.getOneRecord(id);
+    return this.service.getOneRecord(id);
   }
 }

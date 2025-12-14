@@ -29,7 +29,7 @@ export class RecordService {
     return this.repository.getOne(id);
   }
 
-  async deleteRecord(id: string): Promise<RecordAggregate> {
-    return this.deleteRecord(id);
+  async deleteRecord(id: string): Promise<boolean> {
+    return this.repository.delete(id);
   }
 }
